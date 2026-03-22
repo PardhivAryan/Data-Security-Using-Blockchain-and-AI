@@ -1,0 +1,266 @@
+/* ============================= */
+/* GLOBAL RESET */
+/* ============================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: url("/static/hospital-bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+    color: #1e293b;
+    min-height: 100vh;
+}
+
+/* Overlay for better readability */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    z-index: -1;
+}
+
+/* ============================= */
+/* NAVBAR */
+/* ============================= */
+
+.navbar {
+    background: #0f172a;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar h2 {
+    color: white;
+    font-weight: 600;
+}
+
+.nav-links a {
+    color: #e2e8f0;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #38bdf8;
+}
+
+/* ============================= */
+/* DASHBOARD CONTAINER */
+/* ============================= */
+
+.dashboard-container {
+    padding: 40px 60px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #0f172a;
+}
+
+/* ============================= */
+/* CARD DESIGN */
+/* ============================= */
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.card h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #0f172a;
+}
+
+/* ============================= */
+/* TABLE DESIGN */
+/* ============================= */
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.styled-table th {
+    background: #1e293b;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.styled-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1e293b;
+}
+
+.styled-table tr:hover {
+    background: #f1f5f9;
+}
+
+/* ============================= */
+/* STATUS COLORS */
+/* ============================= */
+
+.status-pending {
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+.status-approved {
+    color: #10b981;
+    font-weight: bold;
+}
+
+.status-completed {
+    color: #2563eb;
+    font-weight: bold;
+}
+
+/* ============================= */
+/* BUTTONS */
+/* ============================= */
+
+button,
+.btn,
+.btn-success {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+/* ============================= */
+/* AI BADGES */
+/* ============================= */
+
+.badge-risk {
+    background: #facc15;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #1e293b;
+}
+
+.badge-safe {
+    background: #22c55e;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ============================= */
+/* FORMS */
+/* ============================= */
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* ============================= */
+/* LOGIN / REGISTER BOX */
+/* ============================= */
+
+.auth-container {
+    width: 400px;
+    margin: 80px auto;
+}
+
+.auth-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0f172a;
+}
+
+.auth-card button {
+    width: 100%;
+}
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 20px;
+    }
+
+    .auth-container {
+        width: 90%;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        font-size: 12px;
+    }
+}

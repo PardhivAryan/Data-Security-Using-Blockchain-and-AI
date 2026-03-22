@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="auth-container">
+    <div class="auth-card">
+
+        <h2>📝 Register</h2>
+
+        <form method="POST">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Create Password" required>
+
+            <select name="role" required>
+                <option value="">Select Role</option>
+                {% if not admin_exists %}
+                <option value="Admin">Admin</option>
+                {% endif %}
+                <option value="Doctor">Doctor</option>
+                <option value="Patient">Patient</option>
+                <option value="Lab Assistant">Lab Assistant</option>
+            </select>
+
+            <button type="submit" class="btn-primary">Register</button>
+        </form>
+
+        <div id="authMsg" style="margin-top:12px;"></div>
+
+        <!-- Password + Fingerprint (WebAuthn) -->
+        <script src="{{ url_for('static', path='js/api.js') }}"></script>
+        <script src="{{ url_for('static', path='js/webauthn.js') }}"></script>
+        <script src="{{ url_for('static', path='js/auth.js') }}"></script>
+
+        <p style="text-align:center; margin-top:15px;">
+            Already have an account?
+            <a href="/login">Login Here</a>
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}

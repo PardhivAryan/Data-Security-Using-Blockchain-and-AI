@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="dashboard-container">
+
+    <h1 class="page-title">🔐 Blockchain Integrity Status</h1>
+
+    <div class="card">
+        <h2>📊 Blockchain Details</h2>
+
+        <p>
+            <strong>Status:</strong>
+            {% if details.status == "Valid" %}
+                <span class="badge-safe">✔ Valid</span>
+            {% else %}
+                <span class="badge-risk">⚠ Tampered</span>
+            {% endif %}
+        </p>
+
+        <p><strong>Total Blocks:</strong> {{ details.total_blocks }}</p>
+        <p><strong>Last Hash:</strong> {{ details.last_hash }}</p>
+
+        <p><strong>Last Block Data:</strong></p>
+        <pre style="background:#f1f5f9; padding:15px; border-radius:8px; overflow:auto;">{{ details.last_block }}</pre>
+    </div>
+
+    <div class="card">
+        <h2>📂 File Hash Registry</h2>
+        <p style="color:#475569; margin-bottom:10px;">
+            Every uploaded file is listed. If modified, it will show <b>Tampered</b> or <b>Quarantined</b>.
+        </p>
+
+        {% if details.files and details.files|length > 0 %}
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Stored Hash (Ledger)</th>
+                    <th>Current Hash</th>
+                    <th>Integrity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in details.files %}
+                <tr>
+                    <td>{{ f.filename }}</td>
+                    <td style="font-family: monospace; font-size: 12px;">{{ f.stored_hash }}</td>
+
+                    {% if f.current_hash %}
+                        <td style="font-family: monospace; font-size: 12px;">{{ f.current_hash }}</td>
+                    {% else %}
+                        <td style="color:#64748b;">Not checked</td>
+                    {% endif %}
+
+                    <td>
+                        {% if f.status == "Valid" %}
+                            <span class="badge-safe">✔ Valid</span>
+                        {% else %}
+                            <span class="badge-risk">⚠ {{ f.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No uploaded files found yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

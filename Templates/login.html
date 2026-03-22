@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="auth-container">
+    <div class="auth-card">
+
+        <h2>🔐 Login</h2>
+
+        <form method="POST">
+            <input type="email" name="email" placeholder="Enter Email" required>
+            <input type="password" name="password" placeholder="Enter Password" required>
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+
+        <div id="authMsg" style="margin-top:12px;"></div>
+
+        <!-- Password + Fingerprint (WebAuthn) -->
+        <script src="{{ url_for('static', path='js/api.js') }}"></script>
+        <script src="{{ url_for('static', path='js/webauthn.js') }}"></script>
+        <script src="{{ url_for('static', path='js/auth.js') }}"></script>
+
+        <p style="text-align:center; margin-top:15px;">
+            Don’t have an account?
+            <a href="/register">Register Here</a>
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}

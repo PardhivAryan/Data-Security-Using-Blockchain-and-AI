@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="dashboard-container">
+    <h1 class="page-title">🩺 Doctor Dashboard</h1>
+
+    <div class="card">
+        <h2>📅 My Appointments</h2>
+        <table class="styled-table">
+            <thead>
+                <tr><th>Patient</th><th>Date</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                {% for a in appointments %}
+                <tr>
+                    <td>{{ a.patient }}</td>
+                    <td>{{ a.date }}</td>
+                    <td>{{ a.status }}</td>
+                    <td>
+                        {% if a.status == "Pending" %}
+                            <a href="/doctor/appointments/{{ a.id }}/approve" class="btn-success">Approve</a>
+                        {% else %}
+                            <span class="badge-safe">Approved</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>📄 Patient Medical Records</h2>
+        <table class="styled-table">
+            <thead>
+                <tr><th>Patient</th><th>Record</th><th>Date</th><th>Hash</th><th>Download</th></tr>
+            </thead>
+            <tbody>
+                {% for r in medical_records %}
+                <tr>
+                    <td>{{ r.patient }}</td>
+                    <td>{{ r.filename }}</td>
+                    <td>{{ r.date }}</td>
+                    <td>{{ r.hash }}</td>
+                    <td><a href="/download/{{ r.id }}" class="btn-primary">Download</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>🧪 Send Lab Request</h2>
+        <form method="POST" action="/doctor/labrequest">
+            <select name="patient_id" class="form-input" required>
+                <option value="">Select Patient (Approved)</option>
+                {% for p in patients %}
+                    <option value="{{ p.id }}">{{ p.label }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="test_type" class="form-input" required>
+                <option value="">Select Test Type</option>
+                <option value="MRI Scan">MRI Scan</option>
+                <option value="X-ray Scan">X-ray Scan</option>
+                <option value="CT Scan">CT Scan</option>
+                <option value="Blood Test">Blood Test</option>
+            </select>
+
+            <input type="text" name="notes" class="form-input" placeholder="Notes (optional)">
+            <button type="submit" class="btn-primary">Send Request</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>📋 Lab Requests Status</h2>
+        <table class="styled-table">
+            <thead>
+                <tr><th>Patient</th><th>Test Type</th><th>Status</th><th>Report</th></tr>
+            </thead>
+            <tbody>
+                {% for lr in lab_requests %}
+                <tr>
+                    <td>{{ lr.patient }}</td>
+                    <td>{{ lr.test_type }}</td>
+                    <td>{{ lr.status }}</td>
+                    <td>
+                        {% if lr.report_id %}
+                            <a href="/download/{{ lr.report_id }}" class="btn-primary">Download</a>
+                        {% else %}
+                            No report
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>📝 Write Prescription</h2>
+        <form method="POST" action="/doctor/prescribe">
+            <select name="patient_id" class="form-input" required>
+                <option value="">Select Patient (Approved)</option>
+                {% for p in patients %}
+                    <option value="{{ p.id }}">{{ p.label }}</option>
+                {% endfor %}
+            </select>
+            <textarea name="text" class="form-input" rows="4" placeholder="Write prescription..." required></textarea>
+            <button type="submit" class="btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>💊 My Prescriptions</h2>
+        <table class="styled-table">
+            <thead>
+                <tr><th>Patient</th><th>Date</th><th>Preview</th><th>Download</th></tr>
+            </thead>
+            <tbody>
+                {% for p in prescriptions %}
+                <tr>
+                    <td>{{ p.patient }}</td>
+                    <td>{{ p.date }}</td>
+                    <td>{{ p.preview }}</td>
+                    <td><a href="/prescriptions/{{ p.id }}/download" class="btn-primary">Download</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>📥 Patient IDs Received for Video Call</h2>
+        {% if video_patient_requests %}
+        <table class="styled-table">
+            <thead>
+                <tr><th>Patient</th><th>Email</th><th>Patient ID</th><th>Sent At</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                {% for item in video_patient_requests %}
+                <tr>
+                    <td>{{ item.patient_name }}</td>
+                    <td>{{ item.patient_email }}</td>
+                    <td>{{ item.patient_id }}</td>
+                    <td>{{ item.sent_at }}</td>
+                    <td>
+                        <button type="button" class="btn-primary" onclick="usePatientIdForVideo('{{ item.patient_id }}')">
+                            Use This ID
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No patient ID received yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>🎥 Video Call (Doctor ↔ Patient)</h2>
+        <p>Patient ID sent from patient dashboard will appear above. Use that Patient ID, create room, then send the generated Room ID back to patient dashboard.</p>
+
+        <input type="text" id="patientId" class="form-input" placeholder="Paste Patient ID here">
+        <button id="createRoomBtn" class="btn-primary">Create Room</button>
+
+        <p><b>Room ID:</b></p>
+        <div id="roomIdDisplay" class="id-box"></div>
+
+        <form id="sendRoomForm" method="POST" action="/doctor/video/send-room" style="margin-top: 12px;">
+            <input type="hidden" name="patient_id" id="sendRoomPatientId">
+            <input type="hidden" name="room_id" id="sendRoomRoomId">
+            <button type="button" id="sendRoomIdBtn" class="btn-primary">Send Room ID to Patient Dashboard</button>
+        </form>
+
+        <button id="joinRoomBtn" class="btn-primary">Join Room</button>
+        <button id="startCallBtn" class="btn-primary">Start Call (Send Offer)</button>
+        <button id="hangupBtn" class="btn-danger">Hangup</button>
+
+        <div class="video-grid">
+            <div>
+                <h3>Doctor (Local)</h3>
+                <video id="localVideo" autoplay playsinline></video>
+            </div>
+            <div>
+                <h3>Patient (Remote)</h3>
+                <video id="remoteVideo" autoplay playsinline></video>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function usePatientIdForVideo(patientId) {
+    const patientIdInput = document.getElementById("patientId");
+    const hiddenPatientIdInput = document.getElementById("sendRoomPatientId");
+
+    if (patientIdInput) patientIdInput.value = patientId;
+    if (hiddenPatientIdInput) hiddenPatientIdInput.value = patientId;
+
+    if (patientIdInput) {
+        patientIdInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const patientIdInput = document.getElementById("patientId");
+    const roomIdDisplay = document.getElementById("roomIdDisplay");
+    const sendRoomBtn = document.getElementById("sendRoomIdBtn");
+    const sendRoomForm = document.getElementById("sendRoomForm");
+    const sendRoomPatientId = document.getElementById("sendRoomPatientId");
+    const sendRoomRoomId = document.getElementById("sendRoomRoomId");
+
+    if (!sendRoomBtn || !sendRoomForm || !sendRoomPatientId || !sendRoomRoomId) return;
+
+    sendRoomBtn.addEventListener("click", () => {
+        const patientId = patientIdInput ? patientIdInput.value.trim() : "";
+        const roomId = roomIdDisplay ? roomIdDisplay.textContent.trim() : "";
+
+        if (!patientId) {
+            alert("Select or paste Patient ID first.");
+            return;
+        }
+
+        if (!roomId) {
+            alert("Create Room first.");
+            return;
+        }
+
+        sendRoomPatientId.value = patientId;
+        sendRoomRoomId.value = roomId;
+        sendRoomForm.submit();
+    });
+});
+</script>
+
+<script src="{{ url_for('static', path='js/video_call.js') }}?v=20260303_1"></script>
+{% endblock %}

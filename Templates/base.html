@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Data Security System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>🏥 Medical Data Security System</h2>
+
+        <div class="nav-links">
+            {% if session.get('user') %}
+                <span style="color: white; margin-right: 15px;">
+                    {{ session.get('role') }}
+                </span>
+
+                <a href="{{ url_for(session.get('role').lower().replace(' ', '')) }}">
+                    Dashboard
+                </a>
+
+                <a href="{{ url_for('logout') }}">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{{ url_for('login_page') }}">Login</a>
+                <a href="{{ url_for('register_page') }}">Register</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+</body>
+</html>

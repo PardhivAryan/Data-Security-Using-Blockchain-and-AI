@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:16
+    container_name: medsec_ai_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: medsec_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d medsec_ai"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medsec_ai_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_NAME: Data Security Using Blockchain and AI
+      DEBUG: "true"
+      API_PREFIX: /api
+      CORS_ORIGINS: '["http://localhost:8000"]'
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/medsec_ai
+      JWT_SECRET: CHANGE_ME_TO_A_LONG_RANDOM_SECRET
+      JWT_ALG: HS256
+      JWT_EXP_MINUTES: "480"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "480"
+      RP_ID: localhost
+      RP_NAME: MedSec AI
+      EXPECTED_ORIGIN: http://localhost:8000
+      FERNET_KEY: ggu5BKx08md6bo_c-_ko6xqRPs4ULlRqOmC8PW2N7fs=
+      STORAGE_DIR: storage
+      ENCRYPTED_DIR: storage/encrypted
+      QUARANTINED_DIR: storage/quarantined
+      RISK_MODEL_PATH: app/ml/artifacts/risk_model.pkl
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_storage:/app/backend/storage
+
+volumes:
+  postgres_data:
+  backend_storage:

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="dashboard-container">
+    <h1 class="page-title">🧪 Lab Assistant Dashboard</h1>
+
+    <div class="card">
+        <h2>📋 Lab Test Requests</h2>
+
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Patient</th><th>Doctor</th><th>Test Type</th><th>Status</th><th>Report</th><th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td>{{ r.patient }}</td>
+                    <td>{{ r.doctor }}</td>
+                    <td>{{ r.test_type }}</td>
+                    <td>{{ r.status }}</td>
+                    <td>
+                        {% if r.report %}
+                            <a href="/download/{{ r.report_id }}" class="btn-primary">Download</a>
+                        {% else %}
+                            No report
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if r.status == "Pending" %}
+                            <form method="POST" action="/labassistant/requests/{{ r.id }}/upload" enctype="multipart/form-data">
+                                <input type="file" name="file" required>
+                                <button type="submit" class="btn-primary">Upload</button>
+                            </form>
+                        {% else %}
+                            <span class="badge-safe">Done</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -272,41 +272,72 @@ FastAPI Application
 ## Project Structure
 
 ```text
-.
-├─ Dockerfile
-├─ docker-compose.yml
-├─ README.md
+
 ├─ Templates/
 │  ├─ admin_dashboard.html
 │  ├─ base.html
 │  ├─ blockchain_status.html
 │  ├─ doctor_dashboard.html
 │  ├─ lab_dashboard.html
+│  ├─ landing.html
 │  ├─ login.html
 │  ├─ patient_dashboard.html
 │  └─ register.html
-├─ static/
-│  ├─ css/style.css
-│  ├─ js/api.js
-│  ├─ js/auth.js
-│  ├─ js/video_call.js
-│  └─ js/webauthn.js
+|
 ├─ backend/
+│  ├─ .env
 │  ├─ .env.example
 │  ├─ requirements.txt
 │  ├─ app/
-│  │  ├─ api/
-│  │  ├─ core/
-│  │  ├─ db/
-│  │  ├─ ml/
+│  │  ├─ init.py
 │  │  ├─ main.py
 │  │  ├─ models.py
 │  │  ├─ schemas.py
-│  │  └─ services.py
+│  │  ├─ services.py
+│  │  ├─ api/
+│  │  │  ├─ admin.py
+│  │  │  ├─ auth.py
+│  │  │  ├─ deps.py
+│  │  │  ├─ health.py
+│  │  │  ├─ init.py
+│  │  │  ├─ records.py
+│  │  │  ├─ risk.py
+│  │  │  ├─ router.py
+│  │  │  └─ video.py
+│  │  ├─ core/
+│  │  │  ├─ config.py
+│  │  │  ├─ init.py
+│  │  │  ├─ rbac.py
+│  │  │  ├─ security.py
+│  │  │  └─ webauthn_core.py
+│  │  ├─ db/
+│  │  │  ├─ base.py
+│  │  │  ├─ init.py
+│  │  │  ├─ init_db.py
+│  │  │  └─ session.py
+│  │  └─ ml/
+│  │     ├─ inference.py
+│  │     ├─ init.py
+│  │     └─ train_risk_model.py
 │  └─ storage/
 │     ├─ encrypted/
 │     └─ quarantined/
-└─ uploads/
+|
+|─ static/
+│  ├─ hospital-bg.jpg
+│  ├─ css/
+│  │  └─ style.css
+│  └─ js/
+│     ├─ api.js
+│     ├─ auth.js
+│     ├─ video_call.js
+│     └─ webauthn.js
+|
+├─ .gitignore
+├─ Dockerfile
+├─ README.md
+├─ docker-compose.yml
+├─ dockerignore
 ```
 
 ### Directory notes
